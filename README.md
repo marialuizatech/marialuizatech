@@ -13,7 +13,6 @@
 - 🎓 Cursando Ciência da Computação na PUC Minas
 - 🛠️ Curso técnico em Desenvolvimento de Sistemas pelo SENAI
 - 🌱 Sempre aprendendo coisas novas e construindo projetos
-- 📫 Vamos conversar? Me chame pelas redes abaixo!
 
 ---
 
@@ -29,7 +28,7 @@
 
 <p align="center">
   <!-- TROQUE SEU_USUARIO pelo seu nome de usuário do GitHub -->
-  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=malumnzs&layout=donut&hide_border=true&langs_count=8&theme=default" alt="Linguagens mais usadas" />
+  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=marialuizatech&layout=donut&hide_border=true&langs_count=8&theme=default" alt="Linguagens mais usadas" />
 </p>
 
 ---
@@ -37,7 +36,7 @@
 ## 📈 Estatísticas do GitHub
 
 <p align="center">
-  <img src="https://github-readme-stats.vercel.app/api?username=malumnzs&show_icons=true&hide_border=true&count_private=true" alt="Estatísticas" />
+  <img src="https://github-readme-stats.vercel.app/api?username=marialuizatech&show_icons=true&hide_border=true&count_private=true" alt="Estatísticas" />
 </p>
 
 ---
