@@ -31,14 +31,18 @@ for event in events:
         commits = len(event.get("payload", {}).get("commits", []))
         contributions[date] = contributions.get(date, 0) + commits
 
-# Configurações do calendário
 today = datetime.now(timezone.utc).date()
 
+# Configurações do gráfico
 width = 1000
 height = 210
 cell = 12
 gap = 4
 step = cell + gap
+
+# Movimento da Mikasa
+duration = 18
+travel = 820
 
 svg = [
     f'<svg xmlns="http://www.w3.org/2000/svg" '
@@ -70,13 +74,27 @@ for index in range(365):
     else:
         color = "#ff79a9"
 
-    svg.append(
-        f'<rect x="{x}" y="{y}" width="{cell}" height="{cell}" '
-        f'rx="2" fill="{color}">'
-        f'<title>{escape(day.isoformat())}: '
-        f'{count} public commits detected</title>'
-        '</rect>'
-    )
+    # Calcula quando a Mikasa alcança cada coluna
+    pass_time = max(0, min(
+        duration * 0.94,
+        ((x + cell / 2 - 60) / travel) * duration
+    ))
+
+    before = max(0.001, (pass_time - 0.12) / duration)
+    reached = max(before + 0.001, pass_time / duration)
+
+    svg.append(f"""
+    <rect x="{x}" y="{y}" width="{cell}" height="{cell}"
+          rx="2" fill="{color}">
+        <title>{escape(day.isoformat())}: {count} public commits</title>
+        <animate
+            attributeName="opacity"
+            values="1;1;0;0;1"
+            keyTimes="0;{before:.5f};{reached:.5f};0.94;1"
+            dur="{duration}s"
+            repeatCount="indefinite"/>
+    </rect>
+    """)
 
 # Carrega a imagem original da Mikasa
 image_path = Path("mikasa.png")
@@ -90,9 +108,7 @@ sprite_data = base64.b64encode(
     image_path.read_bytes()
 ).decode("ascii")
 
-# Movimento da Mikasa
-mikasa_path = "M 0,15 L 760,15 L 760,30 L 0,30 L 0,15"
-
+# Mikasa atravessa o gráfico e reinicia o percurso
 svg.append(f"""
 <g>
     <image
@@ -104,76 +120,17 @@ svg.append(f"""
         preserveAspectRatio="xMidYMid meet"
     />
     <animateMotion
-        dur="18s"
+        dur="{duration}s"
         repeatCount="indefinite"
-        path="{mikasa_path}"
+        path="M 0,15 L {travel},15"
     />
-</g>
-""")
-
-# Efeitos de ataque das lâminas
-svg.append(f"""
-<g>
-  <g stroke="#ff426f" stroke-width="5"
-     stroke-linecap="round" fill="none">
-    <path d="M65 85 L135 25">
-      <animate
-        attributeName="opacity"
-        values="0;1;1;0"
-        keyTimes="0;0.15;0.65;1"
-        dur="1.8s"
-        repeatCount="indefinite"/>
-    </path>
-  </g>
-
-  <!-- Brilho do corte -->
-  <path d="M65 85 L135 25"
-        stroke="#ffd5e0"
-        stroke-width="2"
-        fill="none">
-    <animate
-      attributeName="opacity"
-      values="0;1;0"
-      dur="1.8s"
-      repeatCount="indefinite"/>
-  </path>
-
-  <!-- Partículas do impacto -->
-  <g fill="#ff79a9">
-    <circle cx="130" cy="30" r="3">
-      <animate attributeName="opacity"
-        values="0;1;0" dur="1.8s"
-        repeatCount="indefinite"/>
-      <animate attributeName="r"
-        values="1;5;1" dur="1.8s"
-        repeatCount="indefinite"/>
-    </circle>
-
-    <circle cx="145" cy="42" r="2">
-      <animate attributeName="opacity"
-        values="0;1;0" dur="1.4s"
-        repeatCount="indefinite"/>
-    </circle>
-
-    <circle cx="115" cy="20" r="2">
-      <animate attributeName="opacity"
-        values="0;1;0" dur="1.6s"
-        repeatCount="indefinite"/>
-    </circle>
-  </g>
-
-  <animateMotion
-    dur="18s"
-    repeatCount="indefinite"
-    path="{mikasa_path}"
-  />
 </g>
 """)
 
 # Rodapé
 svg.append("""
 <text x="24" y="195" fill="#e9a4b9"
- font-family="monospace" font-size="11">
+      font-family="monospace" font-size="11">
 Mikasa is protecting your contributions!
 </text>
 </svg>
