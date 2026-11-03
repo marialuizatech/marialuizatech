@@ -41,9 +41,13 @@ gap = 4
 step = cell + gap
 
 svg = [
-    f'<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100%" viewBox="0 0 {width} {height}">',
+    f'<svg xmlns="http://www.w3.org/2000/svg" '
+    f'xmlns:xlink="http://www.w3.org/1999/xlink" '
+    f'width="100%" viewBox="0 0 {width} {height}">',
     '<rect width="100%" height="100%" rx="12" fill="#16131a"/>',
-    '<text x="24" y="25" fill="#f3dce8" font-family="monospace" font-size="15">MIKASA ACKERMAN | CONTRIBUTION BATTLE</text>'
+    '<text x="24" y="25" fill="#f3dce8" '
+    'font-family="monospace" font-size="15">'
+    'MIKASA ACKERMAN | CONTRIBUTION BATTLE</text>'
 ]
 
 # Desenha os últimos 365 dias
@@ -69,7 +73,8 @@ for index in range(365):
     svg.append(
         f'<rect x="{x}" y="{y}" width="{cell}" height="{cell}" '
         f'rx="2" fill="{color}">'
-        f'<title>{escape(day.isoformat())}: {count} public commits detected</title>'
+        f'<title>{escape(day.isoformat())}: '
+        f'{count} public commits detected</title>'
         '</rect>'
     )
 
@@ -85,7 +90,9 @@ sprite_data = base64.b64encode(
     image_path.read_bytes()
 ).decode("ascii")
 
-# Animação da Mikasa
+# Movimento da Mikasa
+mikasa_path = "M 0,15 L 760,15 L 760,30 L 0,30 L 0,15"
+
 svg.append(f"""
 <g>
     <image
@@ -99,20 +106,67 @@ svg.append(f"""
     <animateMotion
         dur="18s"
         repeatCount="indefinite"
-        path="M 0,15 L 760,15 L 760,30 L 0,30 L 0,15"
+        path="{mikasa_path}"
     />
 </g>
 """)
 
-# Efeitos de ataque
-svg.append("""
-<g fill="none" stroke="#e94b70" stroke-width="4">
-  <path d="M0 0 L35 0">
-    <animate attributeName="opacity" values="0;1;0"
-      dur="1.5s" repeatCount="indefinite"/>
-    <animateMotion dur="1.5s" repeatCount="indefinite"
-      path="M 60,95 L 880,95"/>
+# Efeitos de ataque das lâminas
+svg.append(f"""
+<g>
+  <g stroke="#ff426f" stroke-width="5"
+     stroke-linecap="round" fill="none">
+    <path d="M65 85 L135 25">
+      <animate
+        attributeName="opacity"
+        values="0;1;1;0"
+        keyTimes="0;0.15;0.65;1"
+        dur="1.8s"
+        repeatCount="indefinite"/>
+    </path>
+  </g>
+
+  <!-- Brilho do corte -->
+  <path d="M65 85 L135 25"
+        stroke="#ffd5e0"
+        stroke-width="2"
+        fill="none">
+    <animate
+      attributeName="opacity"
+      values="0;1;0"
+      dur="1.8s"
+      repeatCount="indefinite"/>
   </path>
+
+  <!-- Partículas do impacto -->
+  <g fill="#ff79a9">
+    <circle cx="130" cy="30" r="3">
+      <animate attributeName="opacity"
+        values="0;1;0" dur="1.8s"
+        repeatCount="indefinite"/>
+      <animate attributeName="r"
+        values="1;5;1" dur="1.8s"
+        repeatCount="indefinite"/>
+    </circle>
+
+    <circle cx="145" cy="42" r="2">
+      <animate attributeName="opacity"
+        values="0;1;0" dur="1.4s"
+        repeatCount="indefinite"/>
+    </circle>
+
+    <circle cx="115" cy="20" r="2">
+      <animate attributeName="opacity"
+        values="0;1;0" dur="1.6s"
+        repeatCount="indefinite"/>
+    </circle>
+  </g>
+
+  <animateMotion
+    dur="18s"
+    repeatCount="indefinite"
+    path="{mikasa_path}"
+  />
 </g>
 """)
 
