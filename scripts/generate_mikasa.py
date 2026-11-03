@@ -123,4 +123,4 @@ Path("output/mikasa-contribution-graph.svg").write_text(
 
 print("Mikasa animation generated successfully!")
 print(f"Public commits detected: {sum(contributions.values())}")
-""")
+
