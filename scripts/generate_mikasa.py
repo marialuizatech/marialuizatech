@@ -1,7 +1,7 @@
 
 import json
 import urllib.request
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from xml.sax.saxutils import escape
 
@@ -12,8 +12,10 @@ url = f"https://api.github.com/users/{USERNAME}/events/public?per_page=100"
 
 request = urllib.request.Request(
     url,
-    headers={"Accept": "application/vnd.github+json",
-             "User-Agent": "Mikasa-Contribution-Battle"}
+    headers={
+        "Accept": "application/vnd.github+json",
+        "User-Agent": "Mikasa-Contribution-Battle"
+    }
 )
 
 with urllib.request.urlopen(request) as response:
@@ -28,8 +30,9 @@ for event in events:
         commits = len(event.get("payload", {}).get("commits", []))
         contributions[date] = contributions.get(date, 0) + commits
 
-# Prepara o calendário
+# Configurações do calendário
 today = datetime.now(timezone.utc).date()
+
 width = 1000
 height = 190
 cell = 12
@@ -44,7 +47,7 @@ svg = [
 
 # Desenha os últimos 365 dias
 for index in range(365):
-    day = today.fromordinal(today.toordinal() - (364 - index))
+    day = today - timedelta(days=364 - index)
     count = contributions.get(day.isoformat(), 0)
 
     column = index // 7
@@ -70,7 +73,6 @@ for index in range(365):
     )
 
 # Personagem Mikasa em pixel art
-character = """
 character = """
 <g shape-rendering="crispEdges">
 
@@ -154,8 +156,8 @@ character = """
 
 </g>
 """
-"""
 
+# Animação de movimento da Mikasa
 svg.append(
     f'<g>{character}'
     '<animateMotion dur="18s" repeatCount="indefinite" '
@@ -175,6 +177,7 @@ svg.append("""
 </g>
 """)
 
+# Rodapé
 svg.append("""
 <text x="24" y="175" fill="#e9a4b9"
  font-family="monospace" font-size="11">
@@ -183,12 +186,13 @@ Mikasa is protecting your contributions!
 </svg>
 """)
 
+# Salva o arquivo
 Path("output").mkdir(exist_ok=True)
 
 Path("output/mikasa-contribution-graph.svg").write_text(
-    "\n".join(svg), encoding="utf-8"
+    "\n".join(svg),
+    encoding="utf-8"
 )
 
 print("Mikasa animation generated successfully!")
 print(f"Public commits detected: {sum(contributions.values())}")
-
