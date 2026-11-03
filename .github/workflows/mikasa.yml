@@ -1,4 +1,3 @@
-
 name: Mikasa Contribution Battle
 
 on:
@@ -17,10 +16,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Generate Mikasa contribution animation
+      - name: Baixar repositório
         uses: actions/checkout@v4
 
-      - name: Prepare output
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Gerar animação da Mikasa
+        run: python scripts/generate_mikasa.py
+
+      - name: Salvar animação no repositório
         run: |
-          mkdir -p output
-          echo "Preparando a animação da Mikasa!"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add output/mikasa-contribution-graph.svg
+          git commit -m "Atualiza animação da Mikasa" || echo "Sem alterações"
+          git push
